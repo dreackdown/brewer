@@ -1,0 +1,11 @@
+
+…
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÁÍšú1J$cf6721d7-e545-4246-b3d1-8d7d539e5f25
+…
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8úÁÍšú1J$0f5932e9-6b50-4ccf-99fd-86c2515d72a6
+ˆ
+java:S4684"@Replace this persistent entity with a simple POJO or DTO object.(º½ˆÂøÿÿÿÿ8ıÁÍšú1J$2e1d0f95-9b1c-41eb-aaba-d39d0a477def
+ƒ
+java:S4684&"@Replace this persistent entity with a simple POJO or DTO object.(Şïİ8€ÂÍšú1J$a6c4138a-527e-4724-af61-7544789cd96d
+’
+java:S4488%"JReplace "@RequestMapping(method = RequestMethod.POST)" with "@PostMapping"(µÏ¬¬ûÿÿÿÿ8ÂÍšú1J$a70cb888-3f53-415d-a03a-224257b5fd54

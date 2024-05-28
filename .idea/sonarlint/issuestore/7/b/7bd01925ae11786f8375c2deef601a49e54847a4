@@ -1,0 +1,20 @@
+
+­
+java:S6833"eReplace the "@Controller" annotation by "@RestController" and remove all "@ResponseBody" annotations.(íœ¡ñùÿÿÿÿ8ï–¨æû1J$efaffe23-f794-4101-bec7-63f48371cf31
+…
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8ä§æû1J$0b4460a8-24ec-4c8c-847b-c60c86f3f954
+ˆ
+java:S4684"@Replace this persistent entity with a simple POJO or DTO object.(÷§±‡ıÿÿÿÿ8å§æû1J$84e1126d-50d5-437b-b028-fce6805be206
+ƒ
+java:S4684""@Replace this persistent entity with a simple POJO or DTO object.(ÂåãÈ8ç§æû1J$0a0d935b-b4f4-4558-ae66-5506726c24e4
+’
+java:S4488!"JReplace "@RequestMapping(method = RequestMethod.POST)" with "@PostMapping"(ÎéÑóúÿÿÿÿ8ç§æû1J$c60e7075-a518-41d0-abcc-6b2aacea2e90
+ˆ
+java:S46843"@Replace this persistent entity with a simple POJO or DTO object.(éÁæ·ùÿÿÿÿ8é§æû1J$0e60d367-fcec-48f3-9e91-78327f724b92
+n
+java:S14523"&Remove usage of generic wildcard type.(éÁæ·ùÿÿÿÿ8õ–¨æû1J$d8f2b434-178e-4c1f-8863-ee5676a6ae40
+’
+java:S44882"JReplace "@RequestMapping(method = RequestMethod.POST)" with "@PostMapping"(‘•­Áıÿÿÿÿ8é§æû1J$8e36e146-c209-4bc8-8282-b3449c706bf9
+
+java:S1128
+"9Remove this unused import 'org.springframework.ui.Model'.(ê†ıÿÿÿÿ8½Àæû1J$66f26588-7064-4655-8537-a5fa07835a82
