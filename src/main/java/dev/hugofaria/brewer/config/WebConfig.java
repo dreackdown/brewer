@@ -2,6 +2,7 @@ package dev.hugofaria.brewer.config;
 
 import dev.hugofaria.brewer.controller.CervejasController;
 import dev.hugofaria.brewer.controller.converter.EstiloConverter;
+import dev.hugofaria.brewer.thymeleaf.BrewerDialect;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -55,6 +56,7 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
         engine.setTemplateResolver(templateResolver());
 
         engine.addDialect(new LayoutDialect());
+        engine.addDialect(new BrewerDialect());
         return engine;
     }
 
