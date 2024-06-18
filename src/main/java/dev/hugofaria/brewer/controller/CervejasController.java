@@ -5,6 +5,7 @@ import dev.hugofaria.brewer.model.Origem;
 import dev.hugofaria.brewer.model.Sabor;
 import dev.hugofaria.brewer.repository.Cervejas;
 import dev.hugofaria.brewer.repository.Estilos;
+import dev.hugofaria.brewer.repository.filter.CervejaFilter;
 import dev.hugofaria.brewer.service.CadastroCervejaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,13 +53,13 @@ public class CervejasController {
     }
 
     @GetMapping
-    public ModelAndView pesquisar() {
+    public ModelAndView pesquisar(CervejaFilter cervejaFilter, BindingResult result) {
         ModelAndView mv = new ModelAndView("cerveja/PesquisaCervejas");
         mv.addObject("estilos", estilos.findAll());
         mv.addObject("sabores", Sabor.values());
         mv.addObject("origens", Origem.values());
 
-        mv.addObject("cervejas", cervejas.findAll());
+        mv.addObject("cervejas", cervejas.filtrar(cervejaFilter));
         return mv;
     }
 
