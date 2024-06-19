@@ -1,5 +1,6 @@
 package dev.hugofaria.brewer.controller;
 
+import dev.hugofaria.brewer.controller.page.PageWrapper;
 import dev.hugofaria.brewer.model.Cerveja;
 import dev.hugofaria.brewer.model.Origem;
 import dev.hugofaria.brewer.model.Sabor;
@@ -8,6 +9,8 @@ import dev.hugofaria.brewer.repository.Estilos;
 import dev.hugofaria.brewer.repository.filter.CervejaFilter;
 import dev.hugofaria.brewer.service.CadastroCervejaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -53,13 +57,16 @@ public class CervejasController {
     }
 
     @GetMapping
-    public ModelAndView pesquisar(CervejaFilter cervejaFilter, BindingResult result) {
+    public ModelAndView pesquisar(CervejaFilter cervejaFilter, BindingResult result
+            , @PageableDefault(size = 2) Pageable pageable, HttpServletRequest httpServletRequest) {
         ModelAndView mv = new ModelAndView("cerveja/PesquisaCervejas");
         mv.addObject("estilos", estilos.findAll());
         mv.addObject("sabores", Sabor.values());
         mv.addObject("origens", Origem.values());
 
-        mv.addObject("cervejas", cervejas.filtrar(cervejaFilter));
+        PageWrapper<Cerveja> paginaWrapper = new PageWrapper<>(cervejas.filtrar(cervejaFilter, pageable)
+                , httpServletRequest);
+        mv.addObject("pagina", paginaWrapper);
         return mv;
     }
 
