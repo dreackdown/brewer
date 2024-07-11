@@ -1,6 +1,7 @@
 package dev.hugofaria.brewer.config.init;
 
 import dev.hugofaria.brewer.config.JPAConfig;
+import dev.hugofaria.brewer.config.SecurityConfig;
 import dev.hugofaria.brewer.config.ServiceConfig;
 import dev.hugofaria.brewer.config.WebConfig;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -14,7 +15,7 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[]{JPAConfig.class, ServiceConfig.class};
+        return new Class<?>[] { JPAConfig.class, ServiceConfig.class, SecurityConfig.class };
     }
 
     @Override
