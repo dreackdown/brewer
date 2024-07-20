@@ -2,12 +2,15 @@ package dev.hugofaria.brewer.controller;
 
 import dev.hugofaria.brewer.model.Usuario;
 import dev.hugofaria.brewer.repository.Grupos;
+import dev.hugofaria.brewer.repository.Usuarios;
+import dev.hugofaria.brewer.repository.filter.UsuarioFilter;
 import dev.hugofaria.brewer.service.CadastroUsuarioService;
 import dev.hugofaria.brewer.service.exception.EmailUsuarioJaCadastradoException;
 import dev.hugofaria.brewer.service.exception.SenhaObrigatoriaUsuarioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +28,9 @@ public class UsuariosController {
 
     @Autowired
     private Grupos grupos;
+
+    @Autowired
+    private Usuarios usuarios;
 
     @RequestMapping("/novo")
     public ModelAndView novo(Usuario usuario) {
@@ -53,4 +59,11 @@ public class UsuariosController {
         return new ModelAndView("redirect:/usuarios/novo");
     }
 
+    @GetMapping
+    public ModelAndView pesquisar(UsuarioFilter usuarioFilter) {
+        ModelAndView mv = new ModelAndView("/usuario/PesquisaUsuarios");
+        mv.addObject("usuarios", usuarios.filtrar(usuarioFilter));
+        mv.addObject("grupos", grupos.findAll());
+        return mv;
+    }
 }
