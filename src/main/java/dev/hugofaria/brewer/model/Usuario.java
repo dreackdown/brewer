@@ -1,6 +1,7 @@
 package dev.hugofaria.brewer.model;
 
 import dev.hugofaria.brewer.validation.AtributoConfirmacao;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @AtributoConfirmacao(atributo = "senha", atributoConfirmacao = "confirmacaoSenha", message = "Confirmação da senha não confere")
 @Entity
 @Table(name = "usuario")
+@DynamicUpdate
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,6 +45,11 @@ public class Usuario implements Serializable {
 
     @Column(name = "data_nascimento")
     private LocalDate dataNascimento;
+
+    @PreUpdate
+    private void preUpdate() {
+        this.confirmacaoSenha = senha;
+    }
 
     public Long getCodigo() {
         return codigo;
