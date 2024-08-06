@@ -1,5 +1,6 @@
 package dev.hugofaria.brewer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.hugofaria.brewer.model.validation.ClienteGroupSequenceProvider;
 import dev.hugofaria.brewer.model.validation.group.CnpjGroup;
 import dev.hugofaria.brewer.model.validation.group.CpfGroup;
@@ -43,6 +44,7 @@ public class Cliente implements Serializable {
     @Email(message = "E-mail inválido")
     private String email;
 
+    @JsonIgnore
     @Embedded
     private Endereco endereco;
 
