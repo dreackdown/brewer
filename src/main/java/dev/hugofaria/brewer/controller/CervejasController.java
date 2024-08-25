@@ -1,6 +1,7 @@
 package dev.hugofaria.brewer.controller;
 
 import dev.hugofaria.brewer.controller.page.PageWrapper;
+import dev.hugofaria.brewer.dto.CervejaDTO;
 import dev.hugofaria.brewer.model.Cerveja;
 import dev.hugofaria.brewer.model.Origem;
 import dev.hugofaria.brewer.model.Sabor;
@@ -11,17 +12,20 @@ import dev.hugofaria.brewer.service.CadastroCervejaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/cervejas")
@@ -48,7 +52,7 @@ public class CervejasController {
     @RequestMapping(value = "/novo", method = RequestMethod.POST)
     public ModelAndView cadastrar(@Valid Cerveja cerveja, BindingResult result, Model model, RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            throw new RuntimeException();
+            return novo(cerveja);
         }
 
         cadastroCervejaService.salvar(cerveja);
@@ -68,5 +72,10 @@ public class CervejasController {
                 , httpServletRequest);
         mv.addObject("pagina", paginaWrapper);
         return mv;
+    }
+
+    @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody List<CervejaDTO> pesquisar(String skuOuNome) {
+        return cervejas.porSkuOuNome(skuOuNome);
     }
 }
