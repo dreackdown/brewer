@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/LayoutPadrao}"
->
+      xmlns:data="http://www.thymeleaf.org/extras/data">
 
 <head>
     <title>Cadastro de venda</title>
@@ -26,14 +26,15 @@
 
     <div class="container-fluid">
         <form method="POST" th:action="@{/vendas/nova}">
+            <input type="hidden" id="uuid" th:value="${uuid}"/>
 
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="aw-box">
+                    <div class="aw-box  js-valor-total-box-container">
                         <div class="aw-box__icon">
                             <i class="fa  fa-usd  fa-3x"></i>
                         </div>
-                        <div class="aw-box__value">R$0,00</div>
+                        <div class="aw-box__value">R$<span class="js-valor-total-box">0,00</span></div>
                         <div class="aw-box__title">Total</div>
                     </div>
                 </div>
@@ -77,7 +78,7 @@
                     </div>
                 </div>
 
-                <div class="form-group  col-sm-4 bw-required">
+                <div class="form-group  col-sm-4">
                     <label class="control-label" for="valorFrete">Valor do frete</label>
                     <div class="input-group">
                         <div class="input-group-addon">R$</div>
@@ -109,37 +110,16 @@
                     <div class="row">
                         <div class="form-group  col-lg-12">
                             <input type="text" class="form-control  js-sku-nome-cerveja-input" id="cerveja"
-                                   placeholder="Pesquise e adicione a cerveja pelo SKU ou nome" autofocus="autofocus"/>
+                                   placeholder="Pesquise e adicione a cerveja pelo SKU ou nome" autofocus="autofocus"
+                                   data:url="@{/cervejas}"/>
                         </div>
                     </div>
 
-                    <div class="bw-tabela-cervejas">
-                        <div class="bw-tabela-item">
-                            <div class="bw-tabela-item__coluna  bw-tabela-item__coluna--foto">
-                                <img th:src="@{/fotos/thumbnail.cerveja-mock.png}" class="img-responsive"/>
-                            </div>
-
-                            <div class="bw-tabela-item__coluna  bw-tabela-item__coluna--detalhes">
-                                <span class="bw-tabela-cerveja-nome">Negra Modelo Long Neck 355ml</span>
-                                <span class="label  label-default">AA1112</span>
-                                <span class="bw-tabela-cerveja-origem">Importada</span>
-                            </div>
-
-                            <div class="bw-tabela-item__coluna  bw-tabela-item__coluna--valores">
-                                <div class="bw-tabela-cerveja-valor-pequeno">
-                                    <input type="text" maxlength="3" class="bw-tabela-cerveja-campo-quantidade"
-                                           value="1"/>
-                                    <span>x R$8,90</span>
-                                </div>
-                                <div class="bw-tabela-cerveja-valor-grande">R$8,90</div>
-                            </div>
-
-                        </div>
-
-                        <!-- <div class="bw-tabela-cervejas__vazio">
+                    <div class="bw-tabela-cervejas  js-tabela-cervejas-container">
+                        <div class="bw-tabela-cervejas__vazio">
                             <i class="glyphicon  glyphicon-shopping-cart"></i>
                             <span>Você ainda não adicionou nenhuma cerveja.</span>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
 
@@ -194,6 +174,8 @@
     <script th:src="@{/javascripts/vendors/handlebars.min.js}"></script>
     <script th:src="@{/javascripts/cliente.pesquisa-rapida.js}"></script>
     <script th:src="@{/javascripts/venda.autocomplete-itens.js}"></script>
+    <script th:src="@{/javascripts/venda.tabela-itens.js}"></script>
+    <script th:src="@{/javascripts/venda.js}"></script>
     <script>
         $(function () {
             $('.js-abas-venda a').click(function (e) {
