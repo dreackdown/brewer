@@ -1,13 +1,28 @@
 package dev.hugofaria.brewer.model;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity
+@Table(name = "item_venda")
 public class ItemVenda {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codigo;
+
     private Integer quantidade;
+
+    @Column(name = "valor_unitario")
     private BigDecimal valorUnitario;
+
+    @ManyToOne
+    @JoinColumn(name = "codigo_cerveja")
     private Cerveja cerveja;
+
+    @ManyToOne
+    @JoinColumn(name = "codigo_venda")
+    private Venda venda;
 
     public Long getCodigo() {
         return codigo;
@@ -43,6 +58,14 @@ public class ItemVenda {
 
     public BigDecimal getValorTotal() {
         return valorUnitario.multiply(new BigDecimal(quantidade));
+    }
+
+    public Venda getVenda() {
+        return venda;
+    }
+
+    public void setVenda(Venda venda) {
+        this.venda = venda;
     }
 
     @Override
