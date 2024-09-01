@@ -1,18 +1,30 @@
 package dev.hugofaria.brewer.controller;
 
+import dev.hugofaria.brewer.controller.page.PageWrapper;
+import dev.hugofaria.brewer.controller.validator.VendaValidator;
 import dev.hugofaria.brewer.model.Cerveja;
+import dev.hugofaria.brewer.model.StatusVenda;
+import dev.hugofaria.brewer.model.TipoPessoa;
 import dev.hugofaria.brewer.model.Venda;
 import dev.hugofaria.brewer.repository.Cervejas;
+import dev.hugofaria.brewer.repository.Vendas;
+import dev.hugofaria.brewer.repository.filter.VendaFilter;
 import dev.hugofaria.brewer.security.UsuarioSistema;
 import dev.hugofaria.brewer.service.CadastroVendaService;
 import dev.hugofaria.brewer.session.TabelasItensSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 @Controller
@@ -28,20 +40,72 @@ public class VendasController {
     @Autowired
     private CadastroVendaService cadastroVendaService;
 
+    @Autowired
+    private VendaValidator vendaValidator;
+
+    @Autowired
+    private Vendas vendas;
+
+    @InitBinder("venda")
+    public void inicializarValidador(WebDataBinder binder) {
+        binder.setValidator(vendaValidator);
+    }
+
     @GetMapping("/nova")
     public ModelAndView nova(Venda venda) {
         ModelAndView mv = new ModelAndView("venda/CadastroVenda");
-        venda.setUuid(UUID.randomUUID().toString());
+
+        if (StringUtils.isEmpty(venda.getUuid())) {
+            venda.setUuid(UUID.randomUUID().toString());
+        }
+
+        mv.addObject("itens", venda.getItens());
+        mv.addObject("valorFrete", venda.getValorFrete());
+        mv.addObject("valorDesconto", venda.getValorDesconto());
+        mv.addObject("valorTotalItens", tabelaItens.getValorTotal(venda.getUuid()));
+
         return mv;
     }
 
-    @PostMapping("/nova")
-    public ModelAndView salvar(Venda venda, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+    @PostMapping(value = "/nova", params = "salvar")
+    public ModelAndView salvar(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+        validarVenda(venda, result);
+        if (result.hasErrors()) {
+            return nova(venda);
+        }
+
         venda.setUsuario(usuarioSistema.getUsuario());
-        venda.adicionarItens(tabelaItens.getItens(venda.getUuid()));
 
         cadastroVendaService.salvar(venda);
         attributes.addFlashAttribute("mensagem", "Venda salva com sucesso");
+        return new ModelAndView("redirect:/vendas/nova");
+    }
+
+    @PostMapping(value = "/nova", params = "emitir")
+    public ModelAndView emitir(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+        validarVenda(venda, result);
+        if (result.hasErrors()) {
+            return nova(venda);
+        }
+
+        venda.setUsuario(usuarioSistema.getUsuario());
+
+        cadastroVendaService.emitir(venda);
+        attributes.addFlashAttribute("mensagem", "Venda emitida com sucesso");
+        return new ModelAndView("redirect:/vendas/nova");
+    }
+
+    @PostMapping(value = "/nova", params = "enviarEmail")
+    public ModelAndView enviarEmail(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+        validarVenda(venda, result);
+        if (result.hasErrors()) {
+            return nova(venda);
+        }
+
+        venda.setUsuario(usuarioSistema.getUsuario());
+
+        cadastroVendaService.salvar(venda);
+        attributes.addFlashAttribute("mensagem", "Venda salva e e-mail enviado");
         return new ModelAndView("redirect:/vendas/nova");
     }
 
@@ -66,10 +130,30 @@ public class VendasController {
         return mvTabelaItensVenda(uuid);
     }
 
+    @GetMapping
+    public ModelAndView pesquisar(VendaFilter vendaFilter,
+                                  @PageableDefault(size = 3) Pageable pageable, HttpServletRequest httpServletRequest) {
+        ModelAndView mv = new ModelAndView("/venda/PesquisaVendas");
+        mv.addObject("todosStatus", StatusVenda.values());
+        mv.addObject("tiposPessoa", TipoPessoa.values());
+
+        PageWrapper<Venda> paginaWrapper = new PageWrapper<>(vendas.filtrar(vendaFilter, pageable)
+                , httpServletRequest);
+        mv.addObject("pagina", paginaWrapper);
+        return mv;
+    }
+
     private ModelAndView mvTabelaItensVenda(String uuid) {
         ModelAndView mv = new ModelAndView("venda/TabelaItensVenda");
         mv.addObject("itens", tabelaItens.getItens(uuid));
         mv.addObject("valorTotal", tabelaItens.getValorTotal(uuid));
         return mv;
+    }
+
+    private void validarVenda(Venda venda, BindingResult result) {
+        venda.adicionarItens(tabelaItens.getItens(venda.getUuid()));
+        venda.calcularValorTotal();
+
+        vendaValidator.validate(venda, result);
     }
 }
