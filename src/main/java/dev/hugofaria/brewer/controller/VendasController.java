@@ -2,6 +2,7 @@ package dev.hugofaria.brewer.controller;
 
 import dev.hugofaria.brewer.controller.page.PageWrapper;
 import dev.hugofaria.brewer.controller.validator.VendaValidator;
+import dev.hugofaria.brewer.mail.Mailer;
 import dev.hugofaria.brewer.model.Cerveja;
 import dev.hugofaria.brewer.model.StatusVenda;
 import dev.hugofaria.brewer.model.TipoPessoa;
@@ -45,6 +46,9 @@ public class VendasController {
 
     @Autowired
     private Vendas vendas;
+
+    @Autowired
+    private Mailer mailer;
 
     @InitBinder("venda")
     public void inicializarValidador(WebDataBinder binder) {
@@ -104,8 +108,10 @@ public class VendasController {
 
         venda.setUsuario(usuarioSistema.getUsuario());
 
-        cadastroVendaService.salvar(venda);
-        attributes.addFlashAttribute("mensagem", "Venda salva e e-mail enviado");
+        venda = cadastroVendaService.salvar(venda);
+        mailer.enviar(venda);
+
+        attributes.addFlashAttribute("mensagem", String.format("Brewer - Venda nº %d", venda.getCodigo()));
         return new ModelAndView("redirect:/vendas/nova");
     }
 

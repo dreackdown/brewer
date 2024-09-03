@@ -8,7 +8,6 @@ import org.springframework.validation.Validator;
 
 import java.math.BigDecimal;
 
-
 @Component
 public class VendaValidator implements Validator {
 

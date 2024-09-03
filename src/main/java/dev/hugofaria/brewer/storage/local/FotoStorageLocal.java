@@ -23,7 +23,7 @@ public class FotoStorageLocal implements FotoStorage {
     private Path localTemporario;
 
     public FotoStorageLocal() {
-        this(getDefault().getPath(System.getenv("HOME"), ".brewerfotos"));
+        this(getDefault().getPath(System.getenv("USERPROFILE"), ".brewerfotos"));
     }
 
     public FotoStorageLocal(Path path) {
@@ -78,6 +78,11 @@ public class FotoStorageLocal implements FotoStorage {
         } catch (IOException e) {
             throw new RuntimeException("Erro lendo a foto", e);
         }
+    }
+
+    @Override
+    public byte[] recuperarThumbnail(String fotoCerveja) {
+        return recuperar("thumbnail." + fotoCerveja);
     }
 
     private void criarPastas() {

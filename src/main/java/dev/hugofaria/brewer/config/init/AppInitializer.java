@@ -1,10 +1,6 @@
 package dev.hugofaria.brewer.config.init;
 
-import dev.hugofaria.brewer.config.JPAConfig;
-import dev.hugofaria.brewer.config.SecurityConfig;
-import dev.hugofaria.brewer.config.ServiceConfig;
-import dev.hugofaria.brewer.config.WebConfig;
-import org.springframework.web.filter.CharacterEncodingFilter;
+import dev.hugofaria.brewer.config.*;
 import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -16,12 +12,12 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[] { JPAConfig.class, ServiceConfig.class, SecurityConfig.class };
+        return new Class<?>[]{JPAConfig.class, ServiceConfig.class, SecurityConfig.class};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[]{WebConfig.class};
+        return new Class<?>[]{WebConfig.class, MailConfig.class};
     }
 
     @Override
@@ -32,7 +28,7 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
     @Override
     protected Filter[] getServletFilters() {
         HttpPutFormContentFilter httpPutFormContentFilter = new HttpPutFormContentFilter();
-        return new Filter[] { httpPutFormContentFilter };
+        return new Filter[]{httpPutFormContentFilter};
     }
 
     @Override
