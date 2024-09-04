@@ -10,4 +10,5 @@ public interface VendasQueries {
 
     Page<Venda> filtrar(VendaFilter filtro, Pageable pageable);
 
+    Venda buscarComItens(Long codigo);
 }

@@ -43,7 +43,7 @@ public class UsuariosController {
         return mv;
     }
 
-    @PostMapping("/novo")
+    @PostMapping({ "/novo", "{\\+d}" })
     public ModelAndView salvar(@Valid Usuario usuario, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors()) {
             return novo(usuario);
@@ -79,5 +79,13 @@ public class UsuariosController {
     @ResponseStatus(HttpStatus.OK)
     public void atualizarStatus(@RequestParam("codigos[]") Long[] codigos, @RequestParam("status") StatusUsuario statusUsuario) {
         cadastroUsuarioService.alterarStatus(codigos, statusUsuario);
+    }
+
+    @GetMapping("/{codigo}")
+    public ModelAndView editar(@PathVariable Long codigo) {
+        Usuario usuario = usuarios.buscarComGrupos(codigo);
+        ModelAndView mv = novo(usuario);
+        mv.addObject(usuario);
+        return mv;
     }
 }

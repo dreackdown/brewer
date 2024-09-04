@@ -3,10 +3,7 @@ package dev.hugofaria.brewer.controller;
 import dev.hugofaria.brewer.controller.page.PageWrapper;
 import dev.hugofaria.brewer.controller.validator.VendaValidator;
 import dev.hugofaria.brewer.mail.Mailer;
-import dev.hugofaria.brewer.model.Cerveja;
-import dev.hugofaria.brewer.model.StatusVenda;
-import dev.hugofaria.brewer.model.TipoPessoa;
-import dev.hugofaria.brewer.model.Venda;
+import dev.hugofaria.brewer.model.*;
 import dev.hugofaria.brewer.repository.Cervejas;
 import dev.hugofaria.brewer.repository.Vendas;
 import dev.hugofaria.brewer.repository.filter.VendaFilter;
@@ -27,6 +24,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
+
+import org.springframework.security.access.AccessDeniedException;
 
 @Controller
 @RequestMapping("/vendas")
@@ -59,9 +58,7 @@ public class VendasController {
     public ModelAndView nova(Venda venda) {
         ModelAndView mv = new ModelAndView("venda/CadastroVenda");
 
-        if (StringUtils.isEmpty(venda.getUuid())) {
-            venda.setUuid(UUID.randomUUID().toString());
-        }
+        setUuid(venda);
 
         mv.addObject("itens", venda.getItens());
         mv.addObject("valorFrete", venda.getValorFrete());
@@ -111,7 +108,7 @@ public class VendasController {
         venda = cadastroVendaService.salvar(venda);
         mailer.enviar(venda);
 
-        attributes.addFlashAttribute("mensagem", String.format("Brewer - Venda nº %d", venda.getCodigo()));
+        attributes.addFlashAttribute("mensagem", String.format("Venda nº %d salva com sucesso e e-mail enviado", venda.getCodigo()));
         return new ModelAndView("redirect:/vendas/nova");
     }
 
@@ -138,7 +135,7 @@ public class VendasController {
 
     @GetMapping
     public ModelAndView pesquisar(VendaFilter vendaFilter,
-                                  @PageableDefault(size = 3) Pageable pageable, HttpServletRequest httpServletRequest) {
+                                  @PageableDefault(size = 10) Pageable pageable, HttpServletRequest httpServletRequest) {
         ModelAndView mv = new ModelAndView("/venda/PesquisaVendas");
         mv.addObject("todosStatus", StatusVenda.values());
         mv.addObject("tiposPessoa", TipoPessoa.values());
@@ -147,6 +144,33 @@ public class VendasController {
                 , httpServletRequest);
         mv.addObject("pagina", paginaWrapper);
         return mv;
+    }
+
+    @GetMapping("/{codigo}")
+    public ModelAndView editar(@PathVariable Long codigo) {
+        Venda venda = vendas.buscarComItens(codigo);
+
+        setUuid(venda);
+        for (ItemVenda item : venda.getItens()) {
+            tabelaItens.adicionarItem(venda.getUuid(), item.getCerveja(), item.getQuantidade());
+        }
+
+        ModelAndView mv = nova(venda);
+        mv.addObject(venda);
+        return mv;
+    }
+
+    @PostMapping(value = "/nova", params = "cancelar")
+    public ModelAndView cancelar(Venda venda, BindingResult result
+            , RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+        try {
+            cadastroVendaService.cancelar(venda);
+        } catch (AccessDeniedException e) {
+            return new ModelAndView("/403");
+        }
+
+        attributes.addFlashAttribute("mensagem", "Venda cancelada com sucesso");
+        return new ModelAndView("redirect:/vendas/" + venda.getCodigo());
     }
 
     private ModelAndView mvTabelaItensVenda(String uuid) {
@@ -161,5 +185,11 @@ public class VendasController {
         venda.calcularValorTotal();
 
         vendaValidator.validate(venda, result);
+    }
+
+    private void setUuid(Venda venda) {
+        if (StringUtils.isEmpty(venda.getUuid())) {
+            venda.setUuid(UUID.randomUUID().toString());
+        }
     }
 }

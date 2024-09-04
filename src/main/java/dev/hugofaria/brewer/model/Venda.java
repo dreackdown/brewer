@@ -1,16 +1,20 @@
 package dev.hugofaria.brewer.model;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Entity
 @Table(name = "venda")
+@DynamicUpdate
 public class Venda {
 
     @Id
@@ -45,7 +49,7 @@ public class Venda {
     @Enumerated(EnumType.STRING)
     private StatusVenda status = StatusVenda.ORCAMENTO;
 
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemVenda> itens = new ArrayList<>();
 
     @Transient
@@ -187,6 +191,19 @@ public class Venda {
 
     public void calcularValorTotal() {
         this.valorTotal = calcularValorTotal(getValorTotalItens(), getValorFrete(), getValorDesconto());
+    }
+
+    public Long getDiasCriacao() {
+        LocalDate inicio = dataCriacao != null ? dataCriacao.toLocalDate() : LocalDate.now();
+        return ChronoUnit.DAYS.between(inicio, LocalDate.now());
+    }
+
+    public boolean isSalvarPermitido() {
+        return !status.equals(StatusVenda.CANCELADA);
+    }
+
+    public boolean isSalvarProibido() {
+        return !isSalvarPermitido();
     }
 
     private BigDecimal calcularValorTotal(BigDecimal valorTotalItens, BigDecimal valorFrete, BigDecimal valorDesconto) {

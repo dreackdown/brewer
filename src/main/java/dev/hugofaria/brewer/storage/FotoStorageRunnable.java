@@ -22,5 +22,4 @@ public class FotoStorageRunnable implements Runnable {
         String contentType = files[0].getContentType();
         resultado.setResult(new FotoDTO(nomeFoto, contentType));
     }
-
 }

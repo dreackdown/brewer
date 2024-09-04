@@ -6,11 +6,14 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cerveja")
-public class Cerveja {
+public class Cerveja implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,6 +66,9 @@ public class Cerveja {
 
     @Column(name = "content_type")
     private String contentType;
+
+    @Transient
+    private boolean novaFoto;
 
     @PrePersist
     @PreUpdate
@@ -180,6 +186,18 @@ public class Cerveja {
 
     public boolean temFoto() {
         return !StringUtils.isEmpty(this.foto);
+    }
+
+    public boolean isNova() {
+        return codigo == null;
+    }
+
+    public boolean isNovaFoto() {
+        return novaFoto;
+    }
+
+    public void setNovaFoto(boolean novaFoto) {
+        this.novaFoto = novaFoto;
     }
 
     @Override
