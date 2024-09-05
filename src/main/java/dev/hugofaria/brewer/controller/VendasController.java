@@ -2,6 +2,7 @@ package dev.hugofaria.brewer.controller;
 
 import dev.hugofaria.brewer.controller.page.PageWrapper;
 import dev.hugofaria.brewer.controller.validator.VendaValidator;
+import dev.hugofaria.brewer.dto.VendaMes;
 import dev.hugofaria.brewer.mail.Mailer;
 import dev.hugofaria.brewer.model.*;
 import dev.hugofaria.brewer.repository.Cervejas;
@@ -13,6 +14,7 @@ import dev.hugofaria.brewer.session.TabelasItensSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -23,9 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.UUID;
-
-import org.springframework.security.access.AccessDeniedException;
 
 @Controller
 @RequestMapping("/vendas")
@@ -171,6 +172,11 @@ public class VendasController {
 
         attributes.addFlashAttribute("mensagem", "Venda cancelada com sucesso");
         return new ModelAndView("redirect:/vendas/" + venda.getCodigo());
+    }
+
+    @GetMapping("/totalPorMes")
+    public @ResponseBody List<VendaMes> listarTotalVendaPorMes() {
+        return vendas.totalPorMes();
     }
 
     private ModelAndView mvTabelaItensVenda(String uuid) {
