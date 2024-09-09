@@ -1,5 +1,6 @@
 package dev.hugofaria.brewer.model;
 
+import dev.hugofaria.brewer.repository.listener.CervejaEntityListener;
 import dev.hugofaria.brewer.validation.SKU;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.util.StringUtils;
@@ -9,6 +10,7 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+@EntityListeners(CervejaEntityListener.class)
 @Entity
 @Table(name = "cerveja")
 public class Cerveja implements Serializable {
@@ -69,6 +71,12 @@ public class Cerveja implements Serializable {
 
     @Transient
     private boolean novaFoto;
+
+    @Transient
+    private String urlFoto;
+
+    @Transient
+    private String urlThumbnailFoto;
 
     @PrePersist
     @PreUpdate
@@ -198,6 +206,22 @@ public class Cerveja implements Serializable {
 
     public void setNovaFoto(boolean novaFoto) {
         this.novaFoto = novaFoto;
+    }
+
+    public String getUrlFoto() {
+        return urlFoto;
+    }
+
+    public void setUrlFoto(String urlFoto) {
+        this.urlFoto = urlFoto;
+    }
+
+    public String getUrlThumbnailFoto() {
+        return urlThumbnailFoto;
+    }
+
+    public void setUrlThumbnailFoto(String urlThumbnailFoto) {
+        this.urlThumbnailFoto = urlThumbnailFoto;
     }
 
     @Override

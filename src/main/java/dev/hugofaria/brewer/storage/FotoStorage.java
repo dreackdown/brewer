@@ -2,17 +2,26 @@ package dev.hugofaria.brewer.storage;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 public interface FotoStorage {
 
-    String salvarTemporariamente(MultipartFile[] files);
+    String THUMBNAIL_PREFIX = "thumbnail.";
+    String URL = "http://localhost:8080/fotos/";
 
-    byte[] recuperarFotoTemporaria(String nome);
 
-    void salvar(String foto);
+    String salvar(MultipartFile[] files);
 
     byte[] recuperar(String foto);
 
     byte[] recuperarThumbnail(String fotoCerveja);
 
     void excluir(String foto);
+
+    String getUrl(String foto);
+
+    default String renomearArquivo(String nomeOriginal) {
+        return UUID.randomUUID().toString() + "_" + nomeOriginal;
+    }
+
 }
