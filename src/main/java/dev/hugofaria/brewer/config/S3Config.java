@@ -16,7 +16,7 @@ public class S3Config {
 //
 //	@Bean
 //	public AmazonS3 amazonS3() {
-//		AWSCredentials credenciais = new BasicAWSCredentials("AKIAUUOZGUZIL3A2TH7G", "fuXKN41Uma1P1p0jOmxq4KehbXiDcZJZmh2Xi/JG");
+//		AWSCredentials credenciais = new BasicAWSCredentials();
 //		AmazonS3 amazonS3 = new AmazonS3Client(credenciais, new ClientConfiguration());
 //		Region regiao = Region.getRegion(Regions.SA_EAST_1);
 //		amazonS3.setRegion(regiao);
