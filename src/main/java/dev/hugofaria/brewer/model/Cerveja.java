@@ -2,7 +2,6 @@ package dev.hugofaria.brewer.model;
 
 import dev.hugofaria.brewer.repository.listener.CervejaEntityListener;
 import dev.hugofaria.brewer.validation.SKU;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
